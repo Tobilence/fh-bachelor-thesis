@@ -1,1 +1,18 @@
-## TODO: Yolo Ultralytics Config
+path: ../data/wood-defects-parsed # dataset root dir
+train: images/train  # train images (relative to 'path')
+val: images/val  # val images (relative to 'path')
+test: images/test # test images (relative to 'path')
+
+# Classes
+names:
+  0: quartzite
+  1: live_knot 
+  2: marrow
+  3: resin
+  4: dead_knot
+  5: knot_with_crack
+  6: missing_knot
+  7: crack
+
+# Output directory
+project: ../runs/yolo 
