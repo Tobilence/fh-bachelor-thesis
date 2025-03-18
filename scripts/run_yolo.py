@@ -5,16 +5,18 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run YOLO training')
     parser.add_argument('--device', type=str, default='cuda:0',
                        help='Device to run on (e.g. cuda:0 or cpu)')
+    parser.add_argument('--epochs', type=int, default=100,
+                       help='Number of training epochs')
     return parser.parse_args()
 
-def train_yolo(device):
+def train_yolo(epochs, device):
     # Load a model
     model = YOLO("yolo11m.pt")
 
     # Train the model on custom dataset
     train_results = model.train(
         data="./config/yolo/dataset.yml",  # path to custom dataset YAML
-        epochs=100,  # number of training epochs
+        epochs=epochs,  # number of training epochs
         imgsz=640,  # training image size
         device=device,  # use specified device
     )
@@ -32,5 +34,5 @@ def train_yolo(device):
 
 if __name__ == '__main__':
     args = parse_args()
-    train_yolo(args.device)
+    train_yolo(args.epochs, args.device)
 
