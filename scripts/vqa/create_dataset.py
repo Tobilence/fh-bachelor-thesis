@@ -179,6 +179,6 @@ def create_vqa_dataset(split_type: str):
 if __name__ == "__main__":
     for split_type in ["val", "train", "test"]:
         dataset = create_vqa_dataset(split_type)
-        os.makedirs("data/wood-defects-parsed/qwen", exist_ok=True)
-        with open(f"data/wood-defects-parsed/qwen/{split_type}.json", "w+") as f:
+        os.makedirs("../../data/wood-defects-parsed/qwen", exist_ok=True)
+        with open(f"../../data/wood-defects-parsed/qwen/{split_type}.json", "w+") as f:
             json.dump(dataset, f, indent=2)
