@@ -79,7 +79,7 @@ with torch.amp.autocast('cuda', dtype=torch.bfloat16):  # Use mixed precision
     generated_ids = model.generate(**inputs, max_new_tokens=128)
 
 generated_ids_trimmed = [
-    out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+    out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs['input_ids'], generated_ids)
 ]
 output_text = processor.batch_decode(
     generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
