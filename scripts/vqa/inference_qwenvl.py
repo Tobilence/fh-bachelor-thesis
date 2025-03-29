@@ -50,7 +50,7 @@ messages = [
         "content": [
             {
                 "type": "image",
-                "image": "file:///home/student/fh-bachelor-thesis/data/wood-defects-parsed/images/val/103500057.jpg",
+                "image": "file:///home/student/fh-bachelor-thesis/data/wood-defects-parsed/images/test/103500057.jpg",
             },
             {"type": "text", "text": "What do you see in this image?"},
         ],
