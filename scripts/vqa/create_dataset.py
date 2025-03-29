@@ -2,6 +2,29 @@
 from PIL import Image
 from typing import List
 
+SYSTEM_PROMPT = """You are a helpful assistant that can detect wood defects in images. You can identify the following defect types:
+- quartzite: A mineral deposit in the wood
+- live_knot: A knot from a living branch, typically well-integrated with the wood
+- marrow: The soft tissue at the center of the tree
+- resin: Areas where tree sap has accumulated
+- dead_knot: A knot from a dead branch, usually darker and loose
+- knot_with_crack: A knot that has developed cracks around it
+- missing_knot: A hole where a knot has fallen out
+- crack: A split or fracture in the wood
+
+When asked about defects, return them in JSON format with each defect having:
+- class_id: The type of defect (one of the above categories)
+- bounding_box: The location coordinates normalized between 0 and 1, containing:
+  - x1: Left coordinate
+  - y1: Top coordinate 
+  - x2: Right coordinate
+  - y2: Bottom coordinate
+  
+Only return the JSON format, no other text."""
+
+USER_PROMPT = """What type of defects do you see in this wood? Return the defects and their relative locations in JSON format."""
+
+
 
 def map_class_to_name(class_id: int) -> str:
     names = {
@@ -69,24 +92,6 @@ def map_annotations_to_json(dataset_split: str, file_name_str: str, annotations:
     return json_annotations
 
 
-## Expected Format (JSON):
-"""
-{
-  "id": "example_detection_empty",
-  "image": "path/to/empty_image.jpg",
-  "conversations": [
-    {
-      "role": "user",
-      "content": "Detect objects in this image and return them in JSON format."
-    },
-    {
-      "role": "assistant", 
-      "content": "```json\n{\n  \"objects\": []\n}\n```"
-    }
-  ]
-}
-"""
-
 import os
 import json
 import random
@@ -113,39 +118,67 @@ def create_vqa_dataset(split_type: str):
             annotations = f.readlines()
             
         # Create conversation format
-        conversation = {
-            "id": json_file.stem,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant that can detect wood defects in images."
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image",
-                            "image": f"file://{image_path}"
-                        },
-                        {
+        if split_type == "test":  # exclude assistant response for test set
+            conversation = {
+                "id": json_file.stem,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT
+                    },
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image",
+                                "image": f"file://{image_path}"
+                            },
+                            {
+                                "type": "text",
+                                "text": USER_PROMPT
+                            }
+                        ],
+                    }
+                ]
+            }
+        else:
+            conversation = {
+                "id": json_file.stem,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT
+                    },
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image",
+                                "image": f"file://{image_path}"
+                            },
+                            {
+                                "type": "text",
+                                "text": USER_PROMPT
+                            }
+                        ],
+                    },
+                    {
+                        "role": "assistant",
+                        "content": {
                             "type": "text",
-                            "text": "What type of defects do you see in this wood? Return the defects and their relative locations in JSON format."
+                            "text": f"```json\n{json.dumps(map_annotations_to_json(split_type, json_file.stem, annotations))}\n```"
                         }
-                    ],
-                },
-                {
-                    "role": "assistant",
-                    "content": map_annotations_to_json(split_type, json_file.stem, annotations)
-                }
-            ]
-        }
+                    }
+                ]
+            }
+
         
         dataset.append(conversation)
     return dataset
 
 if __name__ == "__main__":
     for split_type in ["val", "train", "test"]:
-        dataset = create_vqa_dataset("val")
+        dataset = create_vqa_dataset(split_type)
         os.makedirs("data/wood-defects-parsed/qwen", exist_ok=True)
         with open(f"data/wood-defects-parsed/qwen/{split_type}.json", "w+") as f:
             json.dump(dataset, f, indent=2)
