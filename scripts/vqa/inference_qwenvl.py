@@ -46,13 +46,17 @@ processor = AutoProcessor.from_pretrained(
 
 messages = [
     {
+        "role": "system",
+        "content": "You are a helpful assistant that can detect wood defects in images. Return the defects and their relative locations in JSON format."
+    },
+    {
         "role": "user",
         "content": [
             {
                 "type": "image",
                 "image": "file:///home/student/fh-bachelor-thesis/data/wood-defects-parsed/images/test/103500057.jpg",
             },
-            {"type": "text", "text": "What do you see in this image?"},
+            {"type": "text", "text": "What type of defects (if any) do you see in this wood? Return the defects and their relative locations in JSON format."},
         ],
     }
 ]
