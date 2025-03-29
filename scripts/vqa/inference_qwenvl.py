@@ -58,6 +58,11 @@ for sample in test_set:
     output_text = processor.batch_decode(
         generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
     )
+    print("--------------------------------")
+    print("ID: ", sample["id"])
+    print("INPUT: ", sample["messages"])
+    print("OUTPUT: ", output_text)
+    print("--------------------------------")
     result.append(output_text)
 
 print(result)
