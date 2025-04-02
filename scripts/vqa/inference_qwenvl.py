@@ -30,12 +30,13 @@ with open(file, "r") as f:
 result = []
 
 for sample in test_set:
-    messages = sample["messages"]
+    input_messages = sample["messages"][:2]
+    ground_truth = sample["messages"][2]
     # Preparation for inference
     text = processor.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
+        input_messages, tokenize=False, add_generation_prompt=True
     )
-    image_inputs, video_inputs = process_vision_info(messages)
+    image_inputs, video_inputs = process_vision_info(input_messages)
     inputs = processor(
         text=[text],
         images=image_inputs,
@@ -62,6 +63,7 @@ for sample in test_set:
     print("ID: ", sample["id"])
     print("INPUT: ", sample["messages"])
     print("OUTPUT: ", output_text)
+    print("GROUND TRUTH: ", ground_truth)
     print("--------------------------------")
     result.append(output_text)
 
