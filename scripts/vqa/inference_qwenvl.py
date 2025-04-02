@@ -28,6 +28,7 @@ with open(file, "r") as f:
 
 
 result = []
+print(len(test_set))
 
 for sample in test_set:
     input_messages = sample["messages"][:2]
