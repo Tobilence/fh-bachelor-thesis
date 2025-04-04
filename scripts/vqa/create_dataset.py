@@ -110,7 +110,7 @@ def create_vqa_dataset(split_type: str):
     for txt_file in txt_files:
         # Get corresponding image path
         image_name = txt_file.stem + ".jpg"
-        image_path = str(project_root / f"data/wood-defects-parsed/images/{split_type}/{image_name}")
+        image_path = str(f"./data/wood-defects-parsed/images/{split_type}/{image_name}")
         
         # Read the annotations
         with open(txt_file) as f:
