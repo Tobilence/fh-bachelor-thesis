@@ -20,7 +20,7 @@ processor = AutoProcessor.from_pretrained(
 from pathlib import Path
 import json
 
-TRAIN_SET_PATH = "/home/student/fh-bachelor-thesis/data/wood-defects-parsed/qwen/train.json"
+TRAIN_SET_PATH = "./data/wood-defects-parsed/qwen/train.json"
 file = Path(TRAIN_SET_PATH)
 
 with open(file, "r") as f:
