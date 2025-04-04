@@ -30,7 +30,7 @@ with open(file, "r") as f:
 result = []
 print(len(test_set))
 
-for sample in test_set:
+for sample in test_set[:3]:
     input_messages = sample["messages"][:2]
     ground_truth = sample["messages"][2]
     # Preparation for inference
@@ -60,12 +60,11 @@ for sample in test_set:
     output_text = processor.batch_decode(
         generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
     )
-    print("--------------------------------")
-    print("ID: ", sample["id"])
-    print("INPUT: ", sample["messages"])
-    print("OUTPUT: ", output_text)
-    print("GROUND TRUTH: ", ground_truth)
-    print("--------------------------------")
-    result.append(output_text)
+    print("Finished inference for: ", sample["id"])
+    print("Output: ", output_text)
+    result.append({
+        "img_id": sample["id"],
+        "output": output_text,
+    })
 
-print(result)
+json.dump(result, open("inference_result.json", "w+"))
