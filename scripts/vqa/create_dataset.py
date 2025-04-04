@@ -19,10 +19,10 @@ SYSTEM_PROMPT = """You are a helpful assistant that can detect wood defects in i
 When asked about defects, return them in JSON format with each defect having:
 - class_id: The type of defect (one of the above categories)
 - bounding_box: The location coordinates normalized between 0 and 1, containing:
-  - x1: Left coordinate
-  - y1: Top coordinate 
-  - x2: Right coordinate
-  - y2: Bottom coordinate
+  - x1: Left coordinate (in % of the image width)
+  - y1: Top coordinate (in % of the image height)
+  - x2: Right coordinate (in % of the image width)
+  - y2: Bottom coordinate (in % of the image height)
   
 Only return the JSON format, no other text."""
 
