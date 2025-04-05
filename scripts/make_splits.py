@@ -1,3 +1,4 @@
+# Base Data is in yolo format -- The splits generated here will serve as a split for all models (DETR, Yolo, QwenVL)
 import os
 import shutil
 import random
