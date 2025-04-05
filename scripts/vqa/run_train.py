@@ -170,7 +170,6 @@ def main(args):
         eval_dataset=load_dataset("val"),
         data_collator=collate_fn,
         peft_config=peft_config,
-        tokenizer=processor.tokenizer,
     )
 
     trainer.train()
