@@ -180,5 +180,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    print("clearing cuda cache...")
+    torch.cuda.empty_cache()
     args = parse_arguments()
     main(args)
