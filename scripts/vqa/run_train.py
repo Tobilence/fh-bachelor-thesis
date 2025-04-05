@@ -43,7 +43,10 @@ def load_dataset(split: str):
     with open(dataset_path, "r") as f:
         dataset = json.load(f)
         
-    return dataset
+    # Extract only the messages from each item in the dataset
+    messages_only = [item["messages"] for item in dataset]
+        
+    return messages_only
 
 def setup_model(model_id):
     bnb_config = BitsAndBytesConfig(
@@ -73,7 +76,7 @@ def setup_model(model_id):
     peft_model = get_peft_model(model, peft_config)
     peft_model.print_trainable_parameters()
 
-    return model, processor, peft_config
+    return peft_model, processor, peft_config
 
 def setup_training():
 
@@ -168,8 +171,7 @@ def main(args):
         args=training_args,
         train_dataset=load_dataset("train"),
         eval_dataset=load_dataset("val"),
-        data_collator=collate_fn,
-        peft_config=peft_config,
+        data_collator=collate_fn
     )
 
     trainer.train()
