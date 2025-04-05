@@ -5,7 +5,7 @@ from qwen_vl_utils import process_vision_info
 from peft import LoraConfig, get_peft_model
 import json
 import argparse
-from transformers import BitsAndBytesConfig, Qwen2VLForConditionalGeneration, Qwen2VLProcessor
+from transformers import BitsAndBytesConfig, Qwen2_5_VLForConditionalGeneration, Qwen2_5_VLProcessor
 from datetime import datetime
 import os
 from pathlib import Path
@@ -47,16 +47,19 @@ def load_dataset(split: str):
 
 def setup_model(model_id):
     bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True, bnb_4bit_use_double_quant=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
     )
 
-    model = Qwen2VLForConditionalGeneration.from_pretrained(
+    model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         model_id,
         device_map="auto",
         torch_dtype=torch.bfloat16,
         quantization_config=bnb_config
     )
-    processor = Qwen2VLProcessor.from_pretrained(model_id)
+    processor = Qwen2_5_VLProcessor.from_pretrained(model_id)
 
     peft_config = LoraConfig(
         lora_alpha=16,
@@ -121,7 +124,7 @@ def main(args):
     setup_logging(args.run_name)
     logging.info(f"Starting training run: {args.run_name}")
 
-    model, processor, peft_config = setup_model()
+    model, processor, peft_config = setup_model("Qwen/Qwen2.5-VL-7B-Instruct")
     training_args = setup_training()
 
     wandb.init(
@@ -147,7 +150,7 @@ def main(args):
         labels[labels == processor.tokenizer.pad_token_id] = -100  # Mask padding tokens in labels
 
         # Ignore the image token index in the loss computation (model specific)
-        if isinstance(processor, Qwen2VLProcessor):  # Check if the processor is Qwen2VLProcessor
+        if isinstance(processor, Qwen2_5_VLProcessor):  # Check if the processor is Qwen2VLProcessor
             image_tokens = [151652, 151653, 151655]  # Specific image token IDs for Qwen2VLProcessor
         else:
             image_tokens = [processor.tokenizer.convert_tokens_to_ids(processor.image_token)]  # Convert image token to ID
