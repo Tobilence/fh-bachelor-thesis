@@ -1,0 +1,10 @@
+Tutorial Notebook:
+https://github.com/Sense-X/Co-DETR/blob/main/docs/en/2_new_data_model.md
+
+
+Customize Dataset:
+https://github.com/Sense-X/Co-DETR/blob/main/docs/en/tutorials/customize_dataset.md
+
+Finetune: 
+https://github.com/Sense-X/Co-DETR/blob/main/docs/en/tutorials/finetune.md
+
