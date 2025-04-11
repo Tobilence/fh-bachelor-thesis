@@ -10,13 +10,16 @@ base_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     device_map="auto"
 )
 
+# Define adapter path
+adapter_path = "/home/student/fh-bachelor-thesis/qwen-finetune-v0"
+
 # Load the PEFT config
-peft_config = PeftConfig.from_pretrained("/home/student/fh-bachelor-thesis/qwen-finetune-v0/adapter_config.json")  # Replace with your adapter path
+peft_config = PeftConfig.from_pretrained(adapter_path)
 
 # Load the fine-tuned model
 model = PeftModel.from_pretrained(
     base_model,
-    "/home/student/fh-bachelor-thesis/qwen-finetune-v0/adapter_config.json",  # Replace with your adapter path
+    adapter_path,
     torch_dtype=torch.bfloat16,
     device_map="auto"
 )
