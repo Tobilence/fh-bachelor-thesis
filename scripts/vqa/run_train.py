@@ -197,7 +197,8 @@ def main(args):
         args=training_args,
         train_dataset=load_dataset("train"),
         eval_dataset=load_dataset("val"),
-        data_collator=collate_fn
+        data_collator=collate_fn,
+        label_names=["labels"]
     )
 
     trainer.train()
