@@ -137,6 +137,20 @@ def main(args):
     )
 
     def collate_fn(examples):
+        print("--------------------------------")
+        print("Examples: ", examples)
+        print("--------------------------------")
+         # Get the texts and images, and apply the chat template
+        texts = [
+            processor.apply_chat_template(example, tokenize=False) for example in examples
+        ]  # Prepare texts for processing
+
+        print("--------------------------------")
+        print("Texts: ", texts)
+        print("--------------------------------")
+        image_inputs = [process_vision_info(example)[0] for example in examples]  # Process the images to extract inputs
+
+
         input_messages = [ex["messages"][:-1] for ex in examples]  # Keep system + user only
 
         # Use chat template to format prompt text (without assistant)
