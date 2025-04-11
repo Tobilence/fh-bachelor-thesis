@@ -136,39 +136,30 @@ def main(args):
         config=training_args,
     )
 
-    def collate_fn(examples):
-        print("--------------------------------")
-        print("Examples: ", examples)
-        print("--------------------------------")
-         # Get the texts and images, and apply the chat template
-        texts = [
-            processor.apply_chat_template(example, tokenize=False) for example in examples
-        ]  # Prepare texts for processing
+    def collate_fn(batch):
+        # 🔧 FIX: batch is a list of lists of messages. We flatten each one.
+        # Now `examples` becomes a list of dicts, each with a `.messages` field.
+        examples = [{"messages": example} for example in batch]
 
-        print("--------------------------------")
-        print("Texts: ", texts)
-        print("--------------------------------")
-        image_inputs = [process_vision_info(example)[0] for example in examples]  # Process the images to extract inputs
+        input_messages = [ex["messages"][:-1] for ex in examples]  # Keep system + user
+        target_messages = [ex["messages"][-1] for ex in examples]  # Just the assistant
 
-
-        input_messages = [ex["messages"][:-1] for ex in examples]  # Keep system + user only
-
-        # Use chat template to format prompt text (without assistant)
+        # ✅ Prompt-only for input
         prompts = [
             processor.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
             for msgs in input_messages
         ]
 
-        # Format full input (prompt + assistant) for label token alignment
+        # ✅ Full convo (input + expected response) for label alignment
         full_conversations = [
             processor.apply_chat_template(ex["messages"], tokenize=False)
             for ex in examples
         ]
 
-        # Get processed images
+        # ✅ Extract image tensors
         image_inputs = [process_vision_info(ex["messages"])[0] for ex in examples]
 
-        # Tokenize full conversation (including assistant) for both input and label alignment
+        # ✅ Tokenize with processor
         batch = processor(
             text=full_conversations,
             images=image_inputs,
@@ -178,10 +169,10 @@ def main(args):
 
         labels = batch["input_ids"].clone()
 
-        # Mask padding tokens from the loss
+        # ✅ Mask padding
         labels[labels == processor.tokenizer.pad_token_id] = -100
 
-        # Mask image token IDs from the loss
+        # ✅ Mask image tokens
         if isinstance(processor, Qwen2_5_VLProcessor):
             image_tokens = [151652, 151653, 151655]
         else:
@@ -190,15 +181,15 @@ def main(args):
         for image_token_id in image_tokens:
             labels[labels == image_token_id] = -100
 
-        # Mask prompt tokens (everything before the assistant message)
-        for i, prompt_text in enumerate(prompts):
-            # Tokenize prompt to get its length
+        # ✅ Mask prompt (non-target) tokens
+        for i, (prompt_text, full_text) in enumerate(zip(prompts, full_conversations)):
             prompt_ids = processor.tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
             prompt_len = len(prompt_ids)
-            labels[i, :prompt_len] = -100  # Don't compute loss for prompt tokens
+            labels[i, :prompt_len] = -100
 
         batch["labels"] = labels
         return batch
+
 
 
     trainer = SFTTrainer(
