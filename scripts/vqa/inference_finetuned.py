@@ -35,7 +35,7 @@ processor = AutoProcessor.from_pretrained(
 from pathlib import Path
 import json
 # Load test data
-TEST_SET_PATH = "../../data/wood-defects-parsed/vqa/test.json"
+TEST_SET_PATH = "../../data/wood-defects-parsed/qwen/test.json"
 file = Path(TEST_SET_PATH)
 
 with open(file, "r") as f:

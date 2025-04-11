@@ -4,20 +4,28 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-def visualize_boxes(predictions: list, ground_truths: list, img_id: str, img_dir: str = "data/wood-defects/images"):
+def visualize_boxes(predictions: list, ground_truths: list, img_path, img_is_path=True):
     """
     Visualize predicted and ground truth bounding boxes on an image.
     
     Args:
         predictions: List of dictionaries containing predicted bounding boxes
         ground_truths: List of dictionaries containing ground truth bounding boxes
-        img_id: Image ID to load
-        img_dir: Directory containing the images
+        img_path: Path to the image or the image itself
+        img_is_path: If True, img_path is a path to the image. If False, img_path is the image itself
     """
     # Load image
-    img_path = Path(img_dir) / f"{img_id}.jpg"
-    img = cv2.imread(str(img_path))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    if img_is_path:
+        img_path = Path(img_path)
+        img = cv2.imread(str(img_path))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    else:
+        # Convert PIL Image to numpy array if needed
+        if hasattr(img_path, 'convert'):
+            img = np.array(img_path.convert('RGB'))
+        else:
+            img = img_path
+    
     height, width = img.shape[:2]
     
     # Create figure and axis
@@ -71,7 +79,8 @@ def visualize_boxes(predictions: list, ground_truths: list, img_id: str, img_dir
     ]
     ax.legend(handles=legend_elements, loc='upper right')
     
-    plt.title(f"Image {img_id}")
+    img_name = img_path.name if isinstance(img_path, Path) else "Image"
+    plt.title(f"{img_name}")
     plt.axis('off')
     return fig
 
@@ -82,9 +91,8 @@ from pathlib import Path
 
 if __name__ == "__main__":
     
-    test_image_path = Path(__file__) / "../data" / "wood-defects-parsed/images/test/99100008.jpg"
-    test_annotations_path = Path(__file__) / "../data" / "wood-defects-parsed/vqa/test.json"
-    # Load test image and annotations
+    test_image_path = Path(__file__).parent.parent / "data" / "wood-defects-parsed/images/test/99100008.jpg"
+    test_annotations_path = Path(__file__).parent.parent / "data" / "wood-defects-parsed/vqa/test.json"
     
     # Load image
     img = Image.open(test_image_path)
@@ -109,8 +117,8 @@ if __name__ == "__main__":
         }
     ]
     
-    # Create visualization
-    fig = visualize_boxes(predictions, ground_truths, "test_image")
+    # Create visualization using the PIL Image
+    fig = visualize_boxes(predictions, ground_truths, img, img_is_path=False)
     
     # Display the plot
     plt.show()
