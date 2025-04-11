@@ -65,6 +65,7 @@ for sample in samples:
         input_messages, tokenize=False, add_generation_prompt=True
     )
     image_inputs, video_inputs = process_vision_info(input_messages)
+    print("Prompt Text: ", text)
 
     print("Image Inputs: ", image_inputs)
     assert image_inputs is not None and len(image_inputs) > 0, "Image input is missing or invalid"

@@ -137,34 +137,55 @@ def main(args):
     )
 
     def collate_fn(examples):
-        # Get the texts and images, and apply the chat template
-        texts = [
-            processor.apply_chat_template(example, tokenize=False) for example in examples
-        ]  # Prepare texts for processing
-        image_inputs = [process_vision_info(example)[0] for example in examples]  # Process the images to extract inputs
+        input_messages = [ex["messages"][:-1] for ex in examples]  # Keep system + user only
 
-        # Tokenize the texts and process the images
+        # Use chat template to format prompt text (without assistant)
+        prompts = [
+            processor.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
+            for msgs in input_messages
+        ]
+
+        # Format full input (prompt + assistant) for label token alignment
+        full_conversations = [
+            processor.apply_chat_template(ex["messages"], tokenize=False)
+            for ex in examples
+        ]
+
+        # Get processed images
+        image_inputs = [process_vision_info(ex["messages"])[0] for ex in examples]
+
+        # Tokenize full conversation (including assistant) for both input and label alignment
         batch = processor(
-            text=texts, images=image_inputs, return_tensors="pt", padding=True
-        )  # Encode texts and images into tensors
+            text=full_conversations,
+            images=image_inputs,
+            return_tensors="pt",
+            padding=True,
+        )
 
-        # The labels are the input_ids, and we mask the padding tokens in the loss computation
-        labels = batch["input_ids"].clone()  # Clone input IDs for labels
-        labels[labels == processor.tokenizer.pad_token_id] = -100  # Mask padding tokens in labels
+        labels = batch["input_ids"].clone()
 
-        # Ignore the image token index in the loss computation (model specific)
-        if isinstance(processor, Qwen2_5_VLProcessor):  # Check if the processor is Qwen2VLProcessor
-            image_tokens = [151652, 151653, 151655]  # Specific image token IDs for Qwen2VLProcessor
+        # Mask padding tokens from the loss
+        labels[labels == processor.tokenizer.pad_token_id] = -100
+
+        # Mask image token IDs from the loss
+        if isinstance(processor, Qwen2_5_VLProcessor):
+            image_tokens = [151652, 151653, 151655]
         else:
-            image_tokens = [processor.tokenizer.convert_tokens_to_ids(processor.image_token)]  # Convert image token to ID
+            image_tokens = [processor.tokenizer.convert_tokens_to_ids(processor.image_token)]
 
-        # Mask image token IDs in the labels
         for image_token_id in image_tokens:
-            labels[labels == image_token_id] = -100  # Mask image token IDs in labels
+            labels[labels == image_token_id] = -100
 
-        batch["labels"] = labels  # Add labels to the batch
+        # Mask prompt tokens (everything before the assistant message)
+        for i, prompt_text in enumerate(prompts):
+            # Tokenize prompt to get its length
+            prompt_ids = processor.tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
+            prompt_len = len(prompt_ids)
+            labels[i, :prompt_len] = -100  # Don't compute loss for prompt tokens
 
-        return batch  # Return the prepared batch
+        batch["labels"] = labels
+        return batch
+
 
     trainer = SFTTrainer(
         model=model,
