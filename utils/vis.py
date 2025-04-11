@@ -92,7 +92,7 @@ from pathlib import Path
 if __name__ == "__main__":
     
     test_image_path = Path(__file__).parent.parent / "data" / "wood-defects-parsed/images/test/99100008.jpg"
-    test_annotations_path = Path(__file__).parent.parent / "data" / "wood-defects-parsed/vqa/test.json"
+    test_annotations_path = Path(__file__).parent.parent / "data" / "wood-defects-parsed/qwen/test.json"
     
     # Load image
     img = Image.open(test_image_path)

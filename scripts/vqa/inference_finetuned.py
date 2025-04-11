@@ -3,6 +3,10 @@ from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, Auto
 from peft import PeftModel, PeftConfig
 from qwen_vl_utils import process_vision_info
 
+################################################################################
+### Model Setup Complete
+################################################################################
+
 # Load the base model first
 base_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     "Qwen/Qwen2.5-VL-7B-Instruct",
@@ -32,10 +36,15 @@ processor = AutoProcessor.from_pretrained(
     device_map="auto"
 )
 
+
+################################################################################
+### Inference
+################################################################################
+
 from pathlib import Path
 import json
 # Load test data
-TEST_SET_PATH = "../../data/wood-defects-parsed/qwen/test.json"
+TEST_SET_PATH = "./data/wood-defects-parsed/qwen/test.json"
 file = Path(TEST_SET_PATH)
 
 with open(file, "r") as f:
