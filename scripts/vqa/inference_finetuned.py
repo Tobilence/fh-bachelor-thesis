@@ -15,7 +15,7 @@ base_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
 )
 
 # Define adapter path
-adapter_path = "/home/student/fh-bachelor-thesis/qwen-finetune-v0"
+adapter_path = "/home/student/fh-bachelor-thesis/qwen-finetune-v0/checkpoint-160"
 
 # Load the PEFT config
 peft_config = PeftConfig.from_pretrained(adapter_path)
