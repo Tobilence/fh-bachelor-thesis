@@ -1,94 +1,74 @@
 # Bachelor Thesis: Automated Defect Detection in Wooden Surfaces
 
-Applied machine learning project focused on industrial-quality inspection with object detection.
+Practical deep learning project focused on real-world quality control in the wood industry.
 
-## Quick Profile (for employers)
+## At a Glance
 
-- **Author:** Tobias Furtlehner
-- **Program:** Data Science and Business Analytics (BSc)
-- **Thesis topic:** Automated defect detection on wooden surfaces using deep learning
-- **Core value:** Practical comparison of model families under real deployment constraints (accuracy vs speed)
+- Built and evaluated an end-to-end defect detection benchmark for wooden surfaces.
+- Compared three modern object detectors and one multimodal vision-language model.
+- Analyzed the trade-off between detection accuracy and inference speed for industrial use.
+- Produced a full scientific thesis and reproducible LaTeX documentation.
 
-## Executive Summary
+## Problem
 
-In this thesis, I built and evaluated a benchmark for automated wood defect detection using modern detection models and a multimodal LLM baseline.
+Manual surface inspection is time-consuming, expensive, and inconsistent at scale.  
+The goal of this thesis was to evaluate whether modern AI models can detect wood defects accurately enough for production environments.
 
-The central question was not only "Which model is most accurate?" but also "Which model is best suited for production use?".
-To answer that, I compared detection quality and inference latency side by side and translated results into deployment-oriented recommendations.
+## What I Did
 
-![Pipeline Overview](assets/thesis-pipeline.svg)
-
-## Problem Context
-
-Manual quality control for wood surfaces is repetitive, costly, and hard to scale consistently.
-Even small defects can impact downstream product quality, so reliable automated inspection has clear economic value.
-
-This project investigates whether current deep learning approaches can provide robust defect detection performance for such environments.
-
-## What I Built
-
-- End-to-end evaluation setup for defect detection models
-- Structured comparison across different architecture paradigms
-- Quantitative benchmark on a dataset of **4,000 images** and **8 defect classes**
-- Result interpretation focused on practical deployment decisions
-
-## Models Evaluated
-
-- **YOLOv11** (convolutional detector, optimized for speed)
-- **Co-DETR** (transformer-based detector, optimized for high detection performance)
-- **RT-DETR** (real-time transformer detector)
-- **Qwen2.5-VL-7B** (multimodal vision-language model used as a baseline)
-
-## Evaluation Method
-
-- **Primary quality metric:** `mAP@50`
-- **Operational metric:** inference latency
-- **Decision lens:** accuracy-speed trade-off for industrial settings
-
-This combination ensures that findings are useful not only academically, but also for engineering and operations stakeholders.
+- Designed and executed a comparative evaluation pipeline for defect detection.
+- Worked with a dataset of **4,000 images** across **8 defect classes**.
+- Trained and evaluated:
+  - **YOLOv11**
+  - **Co-DETR**
+  - **RT-DETR**
+  - **Qwen2.5-VL-7B** (multimodal LLM baseline)
+- Measured performance using:
+  - **mAP@50** (detection quality)
+  - **Inference latency** (real-time suitability)
+- Interpreted model behavior and practical deployment trade-offs.
 
 ## Key Results
 
-| Focus | Outcome |
-|---|---|
-| Best detection quality | **Co-DETR** with **mAP@50 = 62.8** |
-| Best real-time suitability | **YOLOv11** and **RT-DETR** at around **100 ms** inference |
-| VLM baseline behavior | **Qwen2.5-VL-7B** was not reliable for precise spatial defect localization |
+- **Best accuracy:** Co-DETR with **mAP@50 = 62.8**
+- **Best real-time profile:** YOLOv11 and RT-DETR (~100 ms inference)
+- **Important finding:** Qwen2.5-VL-7B was not reliable for precise spatial defect localization in this task
 
-![Key Results](assets/thesis-key-results.svg)
+## Why This Matters
 
-## Practical Takeaways
+This work demonstrates how model choice depends on business priorities:
 
 - Choose **Co-DETR** when maximizing detection quality is the top priority.
-- Choose **YOLOv11** or **RT-DETR** when latency and throughput are critical.
-- Do not assume that multimodal LLMs outperform specialized detectors on localization-heavy tasks.
+- Choose **YOLOv11/RT-DETR** when low latency and throughput are critical.
 
-## Limitations and Next Steps
+The thesis provides decision support for applying AI-based visual quality control in industrial settings.
 
-- Dataset characteristics (uniformity and class imbalance) can influence generalization.
-- Next steps include broader data diversity, targeted balancing strategies, and validation in additional production contexts.
-- Future work can also test hybrid pipelines (fast detector + secondary high-precision verification model).
+## Tech Stack
 
-## Skills Demonstrated
+- **Python / Deep Learning frameworks** for model experimentation and evaluation
+- **Computer Vision / Object Detection** workflows
+- **LaTeX** for scientific writing and final thesis production
 
-- Applied deep learning model evaluation in a real domain
-- Comparative benchmarking and metric-driven decision making
-- Translation of ML results into business/engineering recommendations
-- Scientific communication and documentation with LaTeX
+## Repository Overview
 
-## Repository Structure
+This repository contains the thesis source and structure:
 
-- `Bachelorarbeit/` - complete thesis LaTeX project
-- `Bachelorarbeit/user_data/` - chapter content, abstracts, bibliography
-- `Bachelorarbeit/gfx/` - thesis figure sources
-- `Bachelorarbeit/00_main.tex` - LaTeX entry point
-- `assets/` - README visuals for GitHub presentation
+- `Bachelorarbeit/` - complete LaTeX project
+- `Bachelorarbeit/user_data/` - thesis chapters, bibliography, abstracts
+- `Bachelorarbeit/gfx/` - figures/graphics
+- `Bachelorarbeit/00_main.tex` - main entry point
 
 ## Build Thesis PDF (optional)
+
+If you want to compile the thesis document locally:
 
 ```bash
 cd Bachelorarbeit
 make
 ```
 
-Generated output: `Bachelorarbeit/out/thesis.pdf`
+PDF output is generated at `Bachelorarbeit/out/thesis.pdf`.
+
+---
+
+If you are an employer or collaborator and want a short walkthrough of the methodology and findings, feel free to reach out.
