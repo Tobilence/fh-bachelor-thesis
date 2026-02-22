@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-label="Bachelor thesis pipeline">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #12344d; }
+      .box { fill: #f7fbff; stroke: #1f77b4; stroke-width: 2; rx: 10; }
+      .step { font: 700 18px Arial, sans-serif; fill: #1f77b4; }
+      .text { font: 15px Arial, sans-serif; fill: #1b1f24; }
+      .arrow { fill: #1f77b4; }
+    </style>
+  </defs>
+
+  <text x="600" y="38" text-anchor="middle" class="title">Bachelor Thesis Pipeline</text>
+
+  <rect class="box" x="24" y="70" width="200" height="150" />
+  <text class="step" x="124" y="98" text-anchor="middle">1) Dataset</text>
+  <text class="text" x="44" y="132">- 4,000 wood surface images</text>
+  <text class="text" x="44" y="157">- 8 defect classes</text>
+  <text class="text" x="44" y="182">- Industrial inspection context</text>
+
+  <polygon class="arrow" points="236,140 276,140 276,128 302,145 276,162 276,150 236,150" />
+
+  <rect class="box" x="316" y="70" width="220" height="150" />
+  <text class="step" x="426" y="98" text-anchor="middle">2) Models Evaluated</text>
+  <text class="text" x="336" y="132">- YOLOv11</text>
+  <text class="text" x="336" y="154">- Co-DETR</text>
+  <text class="text" x="336" y="176">- RT-DETR</text>
+  <text class="text" x="336" y="198">- Qwen2.5-VL-7B</text>
+
+  <polygon class="arrow" points="548,140 588,140 588,128 614,145 588,162 588,150 548,150" />
+
+  <rect class="box" x="628" y="70" width="200" height="150" />
+  <text class="step" x="728" y="98" text-anchor="middle">3) Evaluation</text>
+  <text class="text" x="648" y="132">- mAP@50</text>
+  <text class="text" x="648" y="157">- Inference latency</text>
+  <text class="text" x="648" y="182">- Practical deployment fit</text>
+
+  <polygon class="arrow" points="840,140 880,140 880,128 906,145 880,162 880,150 840,150" />
+
+  <rect class="box" x="920" y="70" width="256" height="150" />
+  <text class="step" x="1048" y="98" text-anchor="middle">4) Decision Guidance</text>
+  <text class="text" x="940" y="132">- Co-DETR: best accuracy</text>
+  <text class="text" x="940" y="157">- YOLOv11 / RT-DETR: low latency</text>
+  <text class="text" x="940" y="182">- Model depends on use case</text>
+</svg>
